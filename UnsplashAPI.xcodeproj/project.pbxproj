@@ -51,6 +51,7 @@
 		A2F72D7129CB905A00E0DDF7 /* UnsplashAPIUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnsplashAPIUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2F72D7529CB905A00E0DDF7 /* UnsplashAPIUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnsplashAPIUITests.swift; sourceTree = "<group>"; };
 		A2F72D7729CB905B00E0DDF7 /* UnsplashAPIUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnsplashAPIUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		A2F72D8429CB907A00E0DDF7 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +110,7 @@
 				A2F72D5F29CB905900E0DDF7 /* LaunchScreen.storyboard */,
 				A2F72D6229CB905900E0DDF7 /* Info.plist */,
 				A2F72D5A29CB903C00E0DDF7 /* UnsplashAPI.xcdatamodeld */,
+				A2F72D8429CB907A00E0DDF7 /* README.md */,
 			);
 			path = UnsplashAPI;
 			sourceTree = "<group>";
