@@ -10,8 +10,10 @@ import Foundation
 // MARK: - USPhoto
 struct USPhoto: Codable {
     let id: String?
-    let createdAt, updatedAt: Date?
-    let promotedAt: Date?
+    //let createdAt, updatedAt: Date?
+    //let promotedAt: Date?
+    let createdAt, updatedAt: String?
+    let promotedAt: String?
     let width, height: Int?
     let color, blurHash: String?
     let description: String?
@@ -70,7 +72,8 @@ struct Sponsorship: Codable {
 // MARK: - User
 struct User: Codable {
     let id: String?
-    let updatedAt: Date?
+    //let updatedAt: Date?
+    let updatedAt: String?
     let username, name, firstName: String?
     let lastName, twitterUsername: String?
     let portfolioURL: String?
