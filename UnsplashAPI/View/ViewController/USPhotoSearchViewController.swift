@@ -19,7 +19,6 @@ class USPhotoSearchViewController: UIViewController, USPhotoSearchProtocol {
         // Do any additional setup after loading the view.
         
         initViewModel()
-        vm.loadDataSource()
     }
 
     func initViewModel() {
@@ -42,7 +41,7 @@ extension USPhotoSearchViewController {
             return
         }
         print("VC created!")
-//        vc.newsWebsite = vm.newsDataSource[row].url
+        //vc.vm.newsWebsite = vm.newsDataSource[row].url
         navigationController?.pushViewController(vc, animated: true)
     }
 }

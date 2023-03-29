@@ -49,47 +49,11 @@ class USPhotoResultsViewController: UIViewController, UICollectionViewDelegate, 
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        if viewModel.currentPage < viewModel.totalPages && indexPath.item == viewModel.currentPhotos!.count - 1 {
-        //if viewModel.currentPage < viewModel.totalPages && indexPath.row == viewModel.currentPhotos!.count - 1 {
-            let cell: PhotoCollectionViewCell? = photoResultsCollection.dequeueReusableCell(withReuseIdentifier: "loadingCell", for: indexPath) as? PhotoCollectionViewCell
-            
-            cell?.photoIndicator.startAnimating()
-            
-            guard let cell = cell else {
-                return UICollectionViewCell()
-            }
-            return cell
-        } else {
-            let cell: PhotoCollectionViewCell? = photoResultsCollection.dequeueReusableCell(withReuseIdentifier: "photoCell", for: indexPath) as? PhotoCollectionViewCell
-            
-            cell?.photoView.image = UIImage(named: "placeholder") // set placeholder image first
-            
-            guard let id = viewModel.currentPhotos?[indexPath.item].id else {return cell!}
-            
-            if let existingImage = photoImageCache.object(forKey: NSString(string: String(id))) {
-                cell?.photoView.image = existingImage
-            }
-            
-            //else
-            /*else*/ if let imageURL = viewModel.currentPhotos?[indexPath.item].src?.small {
-                cell?.photoView.downloadImageFrom(link: imageURL, contentMode: UIView.ContentMode.scaleAspectFit, isVideo: false, cacheID: id)
-            }
-            
-            if viewModel.db.checkPhoto(id: Int64(id)) {
-                cell?.backgroundColor = .green
-            } else {
-                cell?.backgroundColor = nil
-            }
-            
-            collectionView.reloadItems(at: [indexPath])
-            
-            return cell!
-        }
+        return populateCell(item: indexPath.item, indexPath: indexPath)
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return populateCell(row: indexPath.row)
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        vm.segueWhenPressed(item: indexPath.item)
     }
     
     /*
@@ -107,21 +71,29 @@ class USPhotoResultsViewController: UIViewController, UICollectionViewDelegate, 
 // MARK: — USPhotoResultsViewController Helper Methods
 
 extension USPhotoResultsViewController {
-    func populateCell(row: Int) -> UITableViewCell {
-        let cell: SDNewsTableViewCell? = newsTable.dequeueReusableCell(withIdentifier: K.newsCellID) as? SDNewsTableViewCell
+    func populateCell(item: Int, indexPath: IndexPath) -> UICollectionViewCell {
+        let cell: USPhotoCollectionViewCell? = photoCollection.dequeueReusableCell(withReuseIdentifier: K.photoCellID, for: indexPath) as? USPhotoCollectionViewCell
         guard let cell = cell else {
-            return UITableViewCell()
+            return UICollectionViewCell()
         }
-        if let title = vm.newsDataSource[row].title {
-            cell.titleLabel.text = title
+        cell.photoResultsImage.image = UIImage(named: "placeholder")
+        if let photoURL = vm.photosDataSource[item].urls?.smallS3 {
+            vm.getImageData(from: photoURL) { success, photoData, error in
+                if success, let data = photoData {
+                    let photoImage = UIImage(data: data)
+                    DispatchQueue.main.async {
+                        cell.photoResultsImage.contentMode = UIView.ContentMode.scaleAspectFit
+                        cell.photoResultsImage.image = photoImage
+                    }
+                } else {
+                    print(error!)
+                }
+            }
         }
-        if let description = vm.newsDataSource[row].description {
-            cell.descriptionLabel.text = description
-        }
-        cell.viewStoryButton.tag = row
+        photoCollection.reloadItems(at: [indexPath])
         return cell
     }
-    
+
     func segueToPhotoDisplay(item: Int) {
         let vc: USPhotoDisplayViewController? = storyboard?.instantiateViewController(withIdentifier: K.photoDisplayViewID) as? USPhotoDisplayViewController
         guard let vc = vc else {
@@ -129,7 +101,7 @@ extension USPhotoResultsViewController {
             return
         }
         print("VC created!")
-        vc.newsWebsite = vm.newsDataSource[item].url
+        vc.vm.currentPhoto = vm.photosDataSource[item]
         navigationController?.pushViewController(vc, animated: true)
     }
     

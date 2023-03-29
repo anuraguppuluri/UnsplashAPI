@@ -8,11 +8,27 @@
 import UIKit
 
 class USPhotoDisplayViewController: UIViewController {
-
+    @IBOutlet weak var photoDisplayImage: UIImageView!
+    var vm = USPhotoDisplayViewModel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        
+        if let photoURL = vm.currentPhoto?.urls?.regular {
+            vm.getImageData(from: photoURL) { success, photoData, error in
+                if success, let data = photoData {
+                    let photoImage = UIImage(data: data)
+                    DispatchQueue.main.async { [self] in
+                        photoDisplayImage.contentMode = UIView.ContentMode.scaleAspectFit
+                        photoDisplayImage.image = photoImage
+                    }
+                } else {
+                    print(error!)
+                }
+            }
+        }
     }
     
 

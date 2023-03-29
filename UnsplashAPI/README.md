@@ -13,3 +13,7 @@ The data couldn’t be read because it isn’t in the correct format.
 
 Just need to convert date to string to resolve this issue.
 
+Error: typeMismatch(Swift.Array<Any>, Swift.DecodingError.Context(codingPath: [], debugDescription: "Expected to decode Array<Any> but found a dictionary instead.", underlyingError: nil))
+The data couldn’t be read because it isn’t in the correct format.
+
+

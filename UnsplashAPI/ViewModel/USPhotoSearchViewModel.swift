@@ -12,7 +12,7 @@ class USPhotoSearchViewModel {
     var delegate: USPhotoSearchProtocol?
     
     func segueWhenTapped() {
-        print(delegate)
+        //print(delegate)
         self.delegate?.segueToPhotoResults()
     }
 }

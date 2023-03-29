@@ -22,12 +22,22 @@ class USAPIManager: NSObject {
             if success {
                 do {
                     let decoder = JSONDecoder()
-                    let obj = try decoder.decode([USPhoto].self, from: data!)
-                    completionHandler(true, obj, nil)
+                    let obj = try decoder.decode(USPhotos.self, from: data!)
+                    completionHandler(true, obj.results, nil)
                 } catch {
                     print("Error: \(error)")
                     completionHandler(false, nil, error.localizedDescription)
                 }
+            } else {
+                completionHandler(false, nil, "Encountered GET request error")
+            }
+        }
+    }
+    
+    func downloadImageData(from url: String, completionHandler: @escaping (_ success: Bool, _ result: Data?, _ error: String?) -> ()) {
+        USNetworkManager.shared.getData(url: url) { success, data in
+            if success {
+                completionHandler(true, data!, nil)
             } else {
                 completionHandler(false, nil, "Encountered GET request error")
             }
