@@ -17,12 +17,24 @@ class USAPIManager: NSObject {
         super.init()
     }
     
-    func decodePhotos(url: String, completionHandler: @escaping (_ success: Bool, _ results: [USPhoto]?, _ error: String?) -> ()) {
-        USNetworkManager.shared.getData(url: url) { success, data in
+    func decodePhotos(url: String, query: String?, completionHandler: @escaping (_ success: Bool, _ results: [USPhoto]?, _ error: String?) -> ()) {
+        var urlBuilder = URLComponents(string: url)
+        urlBuilder?.queryItems = [
+            URLQueryItem(name: "client_id", value: K.apiClientID)
+        ]
+        if let q = query {
+            urlBuilder?.queryItems?.append(URLQueryItem(name: "query", value: q))
+        }
+        guard let urlBuilt = urlBuilder?.url else {
+            print("Error: Cannot Create URL from URL and Filter Strings")
+            return
+        }
+        print(urlBuilt)
+        USNetworkManager.shared.getData(url: urlBuilt.absoluteString, isImage: false) { success, data in
             if success {
                 do {
                     let decoder = JSONDecoder()
-                    let obj = try decoder.decode(USPhotos.self, from: data!)
+                    let obj = try decoder.decode(USPhotos.self, from: data! as! Data)
                     completionHandler(true, obj.results, nil)
                 } catch {
                     print("Error: \(error)")
@@ -35,9 +47,14 @@ class USAPIManager: NSObject {
     }
     
     func downloadImageData(from url: String, completionHandler: @escaping (_ success: Bool, _ result: Data?, _ error: String?) -> ()) {
-        USNetworkManager.shared.getData(url: url) { success, data in
+        USNetworkManager.shared.getData(url: url, isImage: true) { success, url in
             if success {
-                completionHandler(true, data!, nil)
+                do {
+                    let imgData = try Data(contentsOf: url as! URL)
+                    completionHandler(true, imgData, nil)
+                } catch {
+                    completionHandler(false, nil, "Error Retrieving Image in the Form of Data: \(error)")
+                }
             } else {
                 completionHandler(false, nil, "Encountered GET request error")
             }

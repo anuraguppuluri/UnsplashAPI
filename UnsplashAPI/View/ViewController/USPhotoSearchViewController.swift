@@ -9,9 +9,11 @@ import UIKit
 
 protocol USPhotoSearchProtocol: AnyObject {
     func segueToPhotoResults()
+    func displayAlert(alertMessage: String)
 }
 
 class USPhotoSearchViewController: UIViewController, USPhotoSearchProtocol {
+    @IBOutlet weak var queryText: UITextField!
     var vm = USPhotoSearchViewModel()
     
     override func viewDidLoad() {
@@ -26,7 +28,7 @@ class USPhotoSearchViewController: UIViewController, USPhotoSearchProtocol {
     }
     
     @IBAction func searchTapped(_ sender: Any) {
-        vm.segueWhenTapped()
+        vm.segueOrDisplay(searchStr: queryText.text)
     }
     
 }
@@ -37,11 +39,18 @@ extension USPhotoSearchViewController {
     func segueToPhotoResults() {
         let vc: USPhotoResultsViewController? = storyboard?.instantiateViewController(withIdentifier: K.photoResultsViewID) as? USPhotoResultsViewController
         guard let vc = vc else {
-            print("VC not created!")
+            //print("VC not created!")
             return
         }
-        print("VC created!")
-        //vc.vm.newsWebsite = vm.newsDataSource[row].url
+        //print("VC created!")
+        vc.vm.query = queryText.text
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func displayAlert(alertMessage: String) {
+        let alertController = UIAlertController(title: "ATTENTION", message: alertMessage, preferredStyle: .alert)
+        let okAlertAction = UIAlertAction(title: "OK", style: .default)
+        alertController.addAction(okAlertAction)
+        self.present(alertController, animated: true, completion: nil)
     }
 }

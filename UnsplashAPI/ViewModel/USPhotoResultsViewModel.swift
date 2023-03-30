@@ -10,10 +10,11 @@ import Dispatch
 
 class USPhotoResultsViewModel {
     var delegate: USPhotoResultsProtocol?
+    var query: String?
     var photosDataSource: [USPhoto] = []
     
     func loadDataSource() {
-        USAPIManager.shared.decodePhotos(url: K.photoSearchURL) { [self] success, photos, error in
+        USAPIManager.shared.decodePhotos(url: K.photoSearchURL, query: query) { [self] success, photos, error in
             if success, let photos = photos {
                 //print(photos.count)
                 //print(photos)
@@ -23,16 +24,6 @@ class USPhotoResultsViewModel {
                 }
             } else {
                 print(error!)
-            }
-        }
-    }
-    
-    func getImageData(from url: String, completionHandler: @escaping (_ success: Bool, _ result: Data?, _ error: String?) -> ()) {
-        USAPIManager.shared.downloadImageData(from: url) { success, imageData, error in
-            if success {
-                completionHandler(true, imageData!, nil)
-            } else {
-                completionHandler(false, nil, "Encountered GET request error")
             }
         }
     }

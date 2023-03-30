@@ -16,4 +16,16 @@ Just need to convert date to string to resolve this issue.
 Error: typeMismatch(Swift.Array<Any>, Swift.DecodingError.Context(codingPath: [], debugDescription: "Expected to decode Array<Any> but found a dictionary instead.", underlyingError: nil))
 The data couldn’t be read because it isn’t in the correct format.
 
+"" and nil, are they the same?
+
+UnsplashAPI project completed 70%; remaining: —
+1. Adding filters both on UI and programmatically
+2. Using URL component builder to build url and trying out different user inputs
+3. Figuring out using backend server pagination and loading more than 10 results per page
+4. Using activity indicator when the subsequent pages are loading
+
+collection view size resizing
+- sizeatitem
+- image constraint
+- aspect ratio
 

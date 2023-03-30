@@ -17,21 +17,22 @@ class USPhotoDisplayViewController: UIViewController {
         // Do any additional setup after loading the view.
         
         if let photoURL = vm.currentPhoto?.urls?.regular {
-            vm.getImageData(from: photoURL) { success, photoData, error in
-                if success, let data = photoData {
-                    let photoImage = UIImage(data: data)
-                    DispatchQueue.main.async { [self] in
-                        photoDisplayImage.contentMode = UIView.ContentMode.scaleAspectFit
-                        photoDisplayImage.image = photoImage
+            DispatchQueue.global().async {
+                USAPIManager.shared.downloadImageData(from: photoURL) { success, photoData, error in
+                    if success, let data = photoData {
+                        let photoImage = UIImage(data: data)
+                        DispatchQueue.main.async { [self] in
+                            photoDisplayImage.contentMode = UIView.ContentMode.scaleAspectFit
+                            photoDisplayImage.image = photoImage
+                        }
+                    } else {
+                        print(error!)
                     }
-                } else {
-                    print(error!)
                 }
             }
         }
     }
     
-
     /*
     // MARK: - Navigation
 

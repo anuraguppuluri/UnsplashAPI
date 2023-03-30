@@ -45,7 +45,7 @@ class USPhotoResultsViewController: UIViewController, UICollectionViewDelegate, 
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return vm.photosDataSource.count
+        return vm.photosDataSource.count + 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -72,35 +72,46 @@ class USPhotoResultsViewController: UIViewController, UICollectionViewDelegate, 
 
 extension USPhotoResultsViewController {
     func populateCell(item: Int, indexPath: IndexPath) -> UICollectionViewCell {
-        let cell: USPhotoCollectionViewCell? = photoCollection.dequeueReusableCell(withReuseIdentifier: K.photoCellID, for: indexPath) as? USPhotoCollectionViewCell
-        guard let cell = cell else {
-            return UICollectionViewCell()
-        }
-        cell.photoResultsImage.image = UIImage(named: "placeholder")
-        if let photoURL = vm.photosDataSource[item].urls?.smallS3 {
-            vm.getImageData(from: photoURL) { success, photoData, error in
-                if success, let data = photoData {
-                    let photoImage = UIImage(data: data)
-                    DispatchQueue.main.async {
-                        cell.photoResultsImage.contentMode = UIView.ContentMode.scaleAspectFit
-                        cell.photoResultsImage.image = photoImage
+        if indexPath.item == vm.photosDataSource.count {
+            let cell: USPhotoCollectionViewCell? = photoCollection.dequeueReusableCell(withReuseIdentifier: K.photoLoadingCellID, for: indexPath) as? USPhotoCollectionViewCell
+            guard let cell = cell else {
+                return UICollectionViewCell()
+            }
+            cell.photoResultsActivity.startAnimating()
+            return cell
+        } else {
+            let cell: USPhotoCollectionViewCell? = photoCollection.dequeueReusableCell(withReuseIdentifier: K.photoCellID, for: indexPath) as? USPhotoCollectionViewCell
+            guard let cell = cell else {
+                return UICollectionViewCell()
+            }
+            cell.photoResultsImage.image = UIImage(named: "placeholder")
+            if let photoURL = vm.photosDataSource[item].urls?.smallS3 {
+                DispatchQueue.global().async {
+                    USAPIManager.shared.downloadImageData(from: photoURL) { success, photoData, error in
+                        if success, let data = photoData {
+                            let photoImage = UIImage(data: data)
+                            DispatchQueue.main.async {
+                                cell.photoResultsImage.contentMode = UIView.ContentMode.scaleAspectFit
+                                cell.photoResultsImage.image = photoImage
+                            }
+                        } else {
+                            print(error!)
+                        }
                     }
-                } else {
-                    print(error!)
                 }
             }
+            photoCollection.reloadItems(at: [indexPath])
+            return cell
         }
-        photoCollection.reloadItems(at: [indexPath])
-        return cell
     }
 
     func segueToPhotoDisplay(item: Int) {
         let vc: USPhotoDisplayViewController? = storyboard?.instantiateViewController(withIdentifier: K.photoDisplayViewID) as? USPhotoDisplayViewController
         guard let vc = vc else {
-            print("VC not created!")
+            //print("VC not created!")
             return
         }
-        print("VC created!")
+        //print("VC created!")
         vc.vm.currentPhoto = vm.photosDataSource[item]
         navigationController?.pushViewController(vc, animated: true)
     }

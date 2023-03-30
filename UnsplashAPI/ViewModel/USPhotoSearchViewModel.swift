@@ -6,13 +6,16 @@
 //
 
 import Foundation
-import Dispatch
 
 class USPhotoSearchViewModel {
     var delegate: USPhotoSearchProtocol?
     
-    func segueWhenTapped() {
+    func segueOrDisplay(searchStr: String?) {
         //print(delegate)
-        self.delegate?.segueToPhotoResults()
+        if searchStr == "" {
+            self.delegate?.displayAlert(alertMessage: "Empty Search String Provided")
+        } else {
+            self.delegate?.segueToPhotoResults()
+        }
     }
 }

@@ -9,7 +9,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Photo Search View Controller-->
+        <!--Unsplash Photo Search-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="USPhotoSearchViewController" customModule="UnsplashAPI" customModuleProvider="target" sceneMemberID="viewController">
@@ -28,12 +28,26 @@
                                     <action selector="searchTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="S2b-cC-0Vh"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Enter Search Term: —" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o8n-1t-UUy">
+                                <rect key="frame" x="125" y="192" width="164" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ZeJ-xn-J2K">
+                                <rect key="frame" x="20" y="221" width="374" height="34"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
-                    <navigationItem key="navigationItem" id="Rr1-Ea-D20"/>
+                    <navigationItem key="navigationItem" title="Unsplash Photo Search" id="Rr1-Ea-D20"/>
                     <connections>
+                        <outlet property="queryText" destination="ZeJ-xn-J2K" id="h5O-Td-OMI"/>
                         <segue destination="BKV-RB-4DJ" kind="show" id="b30-W5-Ikj"/>
                     </connections>
                 </viewController>
@@ -75,6 +89,23 @@
                                         </collectionViewCellContentView>
                                         <connections>
                                             <outlet property="photoResultsImage" destination="iE7-rF-uIo" id="fZJ-LH-bTN"/>
+                                        </connections>
+                                    </collectionViewCell>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="photoLoadingCell" id="Yqd-Qd-ao9" customClass="USPhotoCollectionViewCell" customModule="UnsplashAPI" customModuleProvider="target">
+                                        <rect key="frame" x="143" y="0.0" width="128" height="128"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="NY8-Yb-uQP">
+                                            <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="3zl-xp-CnI">
+                                                    <rect key="frame" x="54" y="54" width="20" height="20"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </activityIndicatorView>
+                                            </subviews>
+                                        </collectionViewCellContentView>
+                                        <connections>
+                                            <outlet property="photoResultsActivity" destination="3zl-xp-CnI" id="F06-Lf-nn0"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
