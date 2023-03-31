@@ -17,7 +17,7 @@ class USAPIManager: NSObject {
         super.init()
     }
     
-    func decodePhotos(url: String, query: String?, completionHandler: @escaping (_ success: Bool, _ results: [USPhoto]?, _ error: String?) -> ()) {
+    func decodePhotos(url: String, query: String?, page: Int, completionHandler: @escaping (_ success: Bool, _ results: USPhotos?, _ error: String?) -> ()) {
         var urlBuilder = URLComponents(string: url)
         urlBuilder?.queryItems = [
             URLQueryItem(name: "client_id", value: K.apiClientID)
@@ -25,6 +25,7 @@ class USAPIManager: NSObject {
         if let q = query {
             urlBuilder?.queryItems?.append(URLQueryItem(name: "query", value: q))
         }
+        urlBuilder?.queryItems?.append(URLQueryItem(name: "page", value: String(page)))
         guard let urlBuilt = urlBuilder?.url else {
             print("Error: Cannot Create URL from URL and Filter Strings")
             return
@@ -35,7 +36,7 @@ class USAPIManager: NSObject {
                 do {
                     let decoder = JSONDecoder()
                     let obj = try decoder.decode(USPhotos.self, from: data! as! Data)
-                    completionHandler(true, obj.results, nil)
+                    completionHandler(true, obj, nil)
                 } catch {
                     print("Error: \(error)")
                     completionHandler(false, nil, error.localizedDescription)

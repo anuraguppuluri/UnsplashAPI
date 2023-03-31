@@ -9,6 +9,7 @@ import UIKit
 
 protocol USPhotoResultsProtocol: AnyObject {
     func segueToPhotoDisplay(item: Int)
+    func displayAlert(alertMessage: String)
     func reloadCollection()
 }
 
@@ -23,7 +24,7 @@ class USPhotoResultsViewController: UIViewController, UICollectionViewDelegate, 
         
         initView()
         initViewModel()
-        vm.loadDataSource()
+        vm.reloadDataSource(page: 1)
     }
     
     func initView() {
@@ -45,11 +46,15 @@ class USPhotoResultsViewController: UIViewController, UICollectionViewDelegate, 
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return vm.photosDataSource.count + 1
+        return vm.photosDataSource?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         return populateCell(item: indexPath.item, indexPath: indexPath)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        prefetchNextPage(item: indexPath.item)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -72,7 +77,7 @@ class USPhotoResultsViewController: UIViewController, UICollectionViewDelegate, 
 
 extension USPhotoResultsViewController {
     func populateCell(item: Int, indexPath: IndexPath) -> UICollectionViewCell {
-        if indexPath.item == vm.photosDataSource.count {
+        if vm.currentPage ?? 1 < vm.totalPages ?? 2 && indexPath.item == (vm.photosDataSource?.count ?? 0) - 1 {
             let cell: USPhotoCollectionViewCell? = photoCollection.dequeueReusableCell(withReuseIdentifier: K.photoLoadingCellID, for: indexPath) as? USPhotoCollectionViewCell
             guard let cell = cell else {
                 return UICollectionViewCell()
@@ -85,7 +90,7 @@ extension USPhotoResultsViewController {
                 return UICollectionViewCell()
             }
             cell.photoResultsImage.image = UIImage(named: "placeholder")
-            if let photoURL = vm.photosDataSource[item].urls?.smallS3 {
+            if let photoURL = vm.photosDataSource?[item].urls?.smallS3 {
                 DispatchQueue.global().async {
                     USAPIManager.shared.downloadImageData(from: photoURL) { success, photoData, error in
                         if success, let data = photoData {
@@ -104,6 +109,13 @@ extension USPhotoResultsViewController {
             return cell
         }
     }
+    
+    func prefetchNextPage(item: Int) {
+        if vm.currentPage ?? 1 < vm.totalPages ?? 2 && item == (vm.photosDataSource?.count ?? 0) - 1 {
+            vm.currentPage = (vm.currentPage ?? 0) + 1
+            vm.reloadDataSource(page: vm.currentPage ?? 0)
+        }
+    }
 
     func segueToPhotoDisplay(item: Int) {
         let vc: USPhotoDisplayViewController? = storyboard?.instantiateViewController(withIdentifier: K.photoDisplayViewID) as? USPhotoDisplayViewController
@@ -112,8 +124,15 @@ extension USPhotoResultsViewController {
             return
         }
         //print("VC created!")
-        vc.vm.currentPhoto = vm.photosDataSource[item]
+        vc.vm.currentPhoto = vm.photosDataSource?[item]
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func displayAlert(alertMessage: String) {
+        let alertController = UIAlertController(title: "ATTENTION", message: alertMessage, preferredStyle: .alert)
+        let okAlertAction = UIAlertAction(title: "OK", style: .default)
+        alertController.addAction(okAlertAction)
+        self.present(alertController, animated: true, completion: nil)
     }
     
     func reloadCollection() {

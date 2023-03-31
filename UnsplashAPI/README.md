@@ -17,6 +17,7 @@ Error: typeMismatch(Swift.Array<Any>, Swift.DecodingError.Context(codingPath: []
 The data couldn’t be read because it isn’t in the correct format.
 
 "" and nil, are they the same?
+will accessing nil.count result in error?
 
 UnsplashAPI project completed 70%; remaining: —
 1. Adding filters both on UI and programmatically
