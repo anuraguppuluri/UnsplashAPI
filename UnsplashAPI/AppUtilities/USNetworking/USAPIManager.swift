@@ -17,7 +17,7 @@ class USAPIManager: NSObject {
         super.init()
     }
     
-    func decodePhotos(url: String, query: String?, page: Int, completionHandler: @escaping (_ success: Bool, _ results: USPhotos?, _ error: String?) -> ()) {
+    func decodePhotos(url: String, query: String?, page: Int, orderBy: String?, orientation: String?, completionHandler: @escaping (_ success: Bool, _ results: USPhotos?, _ error: String?) -> ()) {
         var urlBuilder = URLComponents(string: url)
         urlBuilder?.queryItems = [
             URLQueryItem(name: "client_id", value: K.apiClientID)
@@ -26,6 +26,12 @@ class USAPIManager: NSObject {
             urlBuilder?.queryItems?.append(URLQueryItem(name: "query", value: q))
         }
         urlBuilder?.queryItems?.append(URLQueryItem(name: "page", value: String(page)))
+        if let ord = orderBy {
+            urlBuilder?.queryItems?.append(URLQueryItem(name: "order_by", value: ord))
+        }
+        if let ori = orientation {
+            urlBuilder?.queryItems?.append(URLQueryItem(name: "orientation", value: ori))
+        }
         guard let urlBuilt = urlBuilder?.url else {
             print("Error: Cannot Create URL from URL and Filter Strings")
             return

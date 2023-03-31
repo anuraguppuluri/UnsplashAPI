@@ -9,7 +9,6 @@ import UIKit
 
 protocol USPhotoResultsProtocol: AnyObject {
     func segueToPhotoDisplay(item: Int)
-    func displayAlert(alertMessage: String)
     func reloadCollection()
 }
 
@@ -126,13 +125,6 @@ extension USPhotoResultsViewController {
         //print("VC created!")
         vc.vm.currentPhoto = vm.photosDataSource?[item]
         navigationController?.pushViewController(vc, animated: true)
-    }
-    
-    func displayAlert(alertMessage: String) {
-        let alertController = UIAlertController(title: "ATTENTION", message: alertMessage, preferredStyle: .alert)
-        let okAlertAction = UIAlertAction(title: "OK", style: .default)
-        alertController.addAction(okAlertAction)
-        self.present(alertController, animated: true, completion: nil)
     }
     
     func reloadCollection() {

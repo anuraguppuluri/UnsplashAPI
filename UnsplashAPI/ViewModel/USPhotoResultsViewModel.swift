@@ -10,12 +10,12 @@ import Dispatch
 
 class USPhotoResultsViewModel {
     var delegate: USPhotoResultsProtocol?
-    var query: String?
+    var query, orderBy, orientation: String?
     var photosDataSource: [USPhoto]?
     var currentPage, totalPages: Int?
     
     func reloadDataSource(page: Int) {
-        USAPIManager.shared.decodePhotos(url: K.photoSearchURL, query: query, page: page) { [self] success, photos, error in
+        USAPIManager.shared.decodePhotos(url: K.photoSearchURL, query: query, page: page, orderBy: orderBy, orientation: orientation) { [self] success, photos, error in
             if success, let photos = photos {
                 if page == 1 {
                     totalPages = photos.totalPages
@@ -30,9 +30,7 @@ class USPhotoResultsViewModel {
                 }
                 print("Current Page = \(currentPage ?? -1)")
             } else {
-                DispatchQueue.main.async { [self] in
-                    delegate?.displayAlert(alertMessage: error!)
-                }
+                print(error!)
             }
         }
     }

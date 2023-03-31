@@ -14,6 +14,10 @@ protocol USPhotoSearchProtocol: AnyObject {
 
 class USPhotoSearchViewController: UIViewController, USPhotoSearchProtocol {
     @IBOutlet weak var queryText: UITextField!
+    @IBOutlet weak var orderBySegments: UISegmentedControl!
+    @IBOutlet weak var orientationSegments: UISegmentedControl!
+    var orderBySelected: String?
+    var orientationSelected: String?
     var vm = USPhotoSearchViewModel()
     
     override func viewDidLoad() {
@@ -25,6 +29,14 @@ class USPhotoSearchViewController: UIViewController, USPhotoSearchProtocol {
 
     func initViewModel() {
         vm.delegate = self
+    }
+    
+    @IBAction func orderByChanged(_ sender: Any) {
+        orderBySelected = K.orderByOptions[orderBySegments.selectedSegmentIndex]
+    }
+    
+    @IBAction func orientationChanged(_ sender: Any) {
+        orientationSelected = K.orientationOptions[orientationSegments.selectedSegmentIndex]
     }
     
     @IBAction func searchTapped(_ sender: Any) {
@@ -44,6 +56,8 @@ extension USPhotoSearchViewController {
         }
         //print("VC created!")
         vc.vm.query = queryText.text
+        vc.vm.orderBy = orderBySelected
+        vc.vm.orientation = orientationSelected
         navigationController?.pushViewController(vc, animated: true)
     }
     

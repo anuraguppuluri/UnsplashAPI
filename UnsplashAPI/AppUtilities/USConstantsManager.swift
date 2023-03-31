@@ -18,6 +18,9 @@ struct K
     static let quotesResultsSegueID = "quotesResultsSegue"
     static let newsResultsSegueID = "newsResultsSegue"
     
+    static let orderByOptions = ["relevant", "latest"]
+    static let orientationOptions = ["landscape", "portrait", "squarish"]
+    
     static let photoResultsViewID = "photoResultsView"
     static let photoDisplayViewID = "photoDisplayView"
     static let newsWebsiteViewID = "newsWebsiteView"
