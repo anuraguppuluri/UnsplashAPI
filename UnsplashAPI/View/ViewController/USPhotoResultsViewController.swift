@@ -23,7 +23,7 @@ class USPhotoResultsViewController: UIViewController, UICollectionViewDelegate, 
         
         initView()
         initViewModel()
-        vm.reloadDataSource(page: 1)
+        //vm.addToDataSources(page: 1)
     }
     
     func initView() {
@@ -76,7 +76,7 @@ class USPhotoResultsViewController: UIViewController, UICollectionViewDelegate, 
 
 extension USPhotoResultsViewController {
     func populateCell(item: Int, indexPath: IndexPath) -> UICollectionViewCell {
-        if vm.currentPage ?? 1 < vm.totalPages ?? 2 && indexPath.item == (vm.photosDataSource?.count ?? 0) - 1 {
+        if vm.currentPage! < vm.totalPages! && indexPath.item == vm.photosDataSource!.count - 1 {
             let cell: USPhotoCollectionViewCell? = photoCollection.dequeueReusableCell(withReuseIdentifier: K.photoLoadingCellID, for: indexPath) as? USPhotoCollectionViewCell
             guard let cell = cell else {
                 return UICollectionViewCell()
@@ -89,20 +89,11 @@ extension USPhotoResultsViewController {
                 return UICollectionViewCell()
             }
             cell.photoResultsImage.image = UIImage(named: "placeholder")
-            if let photoURL = vm.photosDataSource?[item].urls?.smallS3 {
-                DispatchQueue.global().async {
-                    USAPIManager.shared.downloadImageData(from: photoURL) { success, photoData, error in
-                        if success, let data = photoData {
-                            let photoImage = UIImage(data: data)
-                            DispatchQueue.main.async {
-                                cell.photoResultsImage.contentMode = UIView.ContentMode.scaleAspectFit
-                                cell.photoResultsImage.image = photoImage
-                            }
-                        } else {
-                            print(error!)
-                        }
-                    }
-                }
+            print(vm.photoImagesDataSource?.count)
+            if let photoImageData = vm.photoImagesDataSource?[item] {
+                let photoImage = UIImage(data: photoImageData)
+                cell.photoResultsImage.contentMode = UIView.ContentMode.scaleAspectFit
+                cell.photoResultsImage.image = photoImage
             }
             photoCollection.reloadItems(at: [indexPath])
             return cell
@@ -110,9 +101,9 @@ extension USPhotoResultsViewController {
     }
     
     func prefetchNextPage(item: Int) {
-        if vm.currentPage ?? 1 < vm.totalPages ?? 2 && item == (vm.photosDataSource?.count ?? 0) - 1 {
-            vm.currentPage = (vm.currentPage ?? 0) + 1
-            vm.reloadDataSource(page: vm.currentPage ?? 0)
+        if vm.currentPage! <= (vm.totalPages! - 5) && item == (vm.photosDataSource!.count - 1 - (2 * 10)) {
+            vm.currentPage = (vm.currentPage!) + 1
+            vm.addToDataSources(page: vm.currentPage!)
         }
     }
 

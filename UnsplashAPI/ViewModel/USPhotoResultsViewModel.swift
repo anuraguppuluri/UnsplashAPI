@@ -10,27 +10,42 @@ import Dispatch
 
 class USPhotoResultsViewModel {
     var delegate: USPhotoResultsProtocol?
-    var query, orderBy, orientation: String?
+    let ap = USAPIManager.shared
+    var params: [String: Any] = [:]
     var photosDataSource: [USPhoto]?
+    var photoImagesDataSource: [Data]?
     var currentPage, totalPages: Int?
     
-    func reloadDataSource(page: Int) {
-        USAPIManager.shared.decodePhotos(url: K.photoSearchURL, query: query, page: page, orderBy: orderBy, orientation: orientation) { [self] success, photos, error in
-            if success, let photos = photos {
-                if page == 1 {
-                    totalPages = photos.totalPages
-                    photosDataSource = photos.results
+    func addToDataSources(page: Int) {
+        for i in page ... (page + K.numberOfPagesToLoad) {
+            params["page"] = i
+            ap.decodePhotos(params: params) { [self] success, photos, error in
+                if success, let photos = photos, let results = photos.results {
+                    photosDataSource?.append(contentsOf: results)
+                    print(photosDataSource!.count)
+                    //print(photosDataSource)
+                    currentPage = i
+                    print("Current Page = \(currentPage)")
+                    for result in results {
+                        if let photoURL = result.urls?.smallS3 {
+                            //print(photoURL)
+                            DispatchQueue.global().async {
+                                USAPIManager.shared.downloadImageData(from: photoURL) { [self] success, photoData, error in
+                                    if success, let data = photoData {
+                                        photoImagesDataSource?.append(data)
+                                    } else {
+                                        print(error!)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    DispatchQueue.main.async { [self] in
+                        delegate?.reloadCollection()
+                    }
                 } else {
-                    photosDataSource?.append(contentsOf: photos.results ?? [])
+                    print(error!)
                 }
-                //print(photos.count)
-                //print(photos)
-                DispatchQueue.main.async { [self] in
-                    delegate?.reloadCollection()
-                }
-                print("Current Page = \(currentPage ?? -1)")
-            } else {
-                print(error!)
             }
         }
     }

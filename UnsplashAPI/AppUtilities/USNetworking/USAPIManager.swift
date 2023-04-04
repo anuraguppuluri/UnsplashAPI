@@ -17,20 +17,22 @@ class USAPIManager: NSObject {
         super.init()
     }
     
-    func decodePhotos(url: String, query: String?, page: Int, orderBy: String?, orientation: String?, completionHandler: @escaping (_ success: Bool, _ results: USPhotos?, _ error: String?) -> ()) {
-        var urlBuilder = URLComponents(string: url)
+    func decodePhotos(params: [String: Any], completionHandler: @escaping (_ success: Bool, _ results: USPhotos?, _ error: String?) -> ()) {
+        var urlBuilder = URLComponents(string: K.photoSearchURL)
         urlBuilder?.queryItems = [
             URLQueryItem(name: "client_id", value: K.apiClientID)
         ]
-        if let q = query {
-            urlBuilder?.queryItems?.append(URLQueryItem(name: "query", value: q))
+        if let q = params["query"] {
+            urlBuilder?.queryItems?.append(URLQueryItem(name: "query", value: q as? String))
         }
-        urlBuilder?.queryItems?.append(URLQueryItem(name: "page", value: String(page)))
-        if let ord = orderBy {
-            urlBuilder?.queryItems?.append(URLQueryItem(name: "order_by", value: ord))
+        if let p = params["page"] {
+            urlBuilder?.queryItems?.append(URLQueryItem(name: "page", value: String(p as! Int)))
         }
-        if let ori = orientation {
-            urlBuilder?.queryItems?.append(URLQueryItem(name: "orientation", value: ori))
+        if let ob = params["orderBy"] {
+            urlBuilder?.queryItems?.append(URLQueryItem(name: "order_by", value: ob as? String))
+        }
+        if let o = params["orientation"] {
+            urlBuilder?.queryItems?.append(URLQueryItem(name: "orientation", value: o as? String))
         }
         guard let urlBuilt = urlBuilder?.url else {
             print("Error: Cannot Create URL from URL and Filter Strings")

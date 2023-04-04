@@ -21,6 +21,8 @@ struct K
     static let orderByOptions = ["relevant", "latest"]
     static let orientationOptions = ["landscape", "portrait", "squarish"]
     
+    static let numberOfPagesToLoad = 5
+    
     static let photoResultsViewID = "photoResultsView"
     static let photoDisplayViewID = "photoDisplayView"
     static let newsWebsiteViewID = "newsWebsiteView"

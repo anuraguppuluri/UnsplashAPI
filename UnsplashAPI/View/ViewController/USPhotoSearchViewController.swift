@@ -40,7 +40,10 @@ class USPhotoSearchViewController: UIViewController, USPhotoSearchProtocol {
     }
     
     @IBAction func searchTapped(_ sender: Any) {
-        vm.segueOrDisplay(searchStr: queryText.text)
+        vm.params["query"] = queryText.text
+        vm.params["orderBy"] = orderBySelected
+        vm.params["orientation"] = orientationSelected
+        vm.initDataSources()
     }
     
 }
@@ -55,9 +58,11 @@ extension USPhotoSearchViewController {
             return
         }
         //print("VC created!")
-        vc.vm.query = queryText.text
-        vc.vm.orderBy = orderBySelected
-        vc.vm.orientation = orientationSelected
+        vc.vm.params = vm.params
+        vc.vm.photosDataSource = vm.photosDataSource
+        vc.vm.photoImagesDataSource = vm.photoImagesDataSource
+        vc.vm.currentPage = vm.currentPage
+        vc.vm.totalPages = vm.totalPages
         navigationController?.pushViewController(vc, animated: true)
     }
     
