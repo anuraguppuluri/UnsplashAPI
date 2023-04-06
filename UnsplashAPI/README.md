@@ -76,3 +76,6 @@ Swift/ContiguousArrayBuffer.swift:575: Fatal error: Index out of range
 The idea for getting out of this could be that before we reach the penultimate page of the already loaded pages, we need to load the next 5 pages in the willDisplay block = so that it is not all 10000 images at once and taking a while to download but also the user scrolling swiftly will also be able to have a smooth interaction
 
 remaining = adding per_page and color filters
+
+https://stackoverflow.com/questions/6044147/ios-memory-allocation-how-much-memory-can-be-used-in-an-application
+Upto 128 MB of RAM seems to be the minimum limit even back in 2011 

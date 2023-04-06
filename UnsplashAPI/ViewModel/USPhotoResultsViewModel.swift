@@ -21,9 +21,10 @@ class USPhotoResultsViewModel {
             params["page"] = i
             ap.decodePhotos(params: params) { [self] success, photos, error in
                 if success, let photos = photos, let results = photos.results {
+                    photoObjectCache.setObject(results as NSObject, forKey: NSNumber(value: i))
                     photosDataSource?.append(contentsOf: results)
                     print(photosDataSource!.count)
-                    //print(photosDataSource)
+                    print(photosDataSource)
                     currentPage = i
                     print("Current Page = \(currentPage)")
                     for result in results {

@@ -45,6 +45,7 @@ class USPhotoResultsViewController: UIViewController, UICollectionViewDelegate, 
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        //return photoObjectCache.countLimit
         return vm.photosDataSource?.count ?? 0
     }
     
@@ -120,5 +121,23 @@ extension USPhotoResultsViewController {
     
     func reloadCollection() {
         photoCollection.reloadData()
+    }
+}
+
+extension UIImageView {
+    func downloadImageFrom(link: URL, contentMode: UIView.ContentMode, cacheID: Int) {
+        DispatchQueue.global().async {
+            URLSession.shared.dataTask(with: link) { data, response, error in
+                    if let data = data {
+                        photoDataCache.setObject(data as NSData, forKey: NSString(string: String(cacheID)))
+                        guard let imageFromData = UIImage(data: data) else { return }
+                        DispatchQueue.main.async {
+                            self.contentMode = contentMode
+                            self.image = imageFromData
+                        }
+                    }
+
+            }.resume()
+        }
     }
 }

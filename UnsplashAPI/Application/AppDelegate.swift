@@ -7,6 +7,10 @@
 
 import UIKit
 import CoreData
+import AVFoundation
+
+var photoObjectCache: NSCache<NSNumber, NSObject> = NSCache()
+var photoDataCache: NSCache<NSString, NSData> = NSCache()
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,6 +19,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        photoObjectCache.countLimit = 14
+        photoDataCache.countLimit = 143
+        photoDataCache.totalCostLimit = 10008 // in KB
         return true
     }
 

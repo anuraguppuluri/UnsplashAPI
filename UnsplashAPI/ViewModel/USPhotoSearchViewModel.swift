@@ -27,9 +27,10 @@ class USPhotoSearchViewModel {
                         if i == 1, let totalPages = photos.totalPages {
                             self.totalPages = totalPages
                         }
+                        photoObjectCache.setObject(results as NSObject, forKey: NSNumber(value: i))
                         photosDataSource.append(contentsOf: results)
                         print(photosDataSource.count)
-                        //print(photosDataSource)
+                        print(photosDataSource)
                         currentPage = i
                         print("Current Page = \(currentPage)")
                         for result in results {
